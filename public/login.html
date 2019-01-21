@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="styles/style.css">
+        <script
+            src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
+        <script>
+            $(document).ready(function(){
+                $('#btnLogin').click(function (){
+                    var username = $('#txtemail').val().trim();
+                    var password = $('#txtpassword').val().trim();
+                    if (username === '')
+                    {
+                        alert("Username is required");
+                        return false;
+                    }
+                    var credentials = {
+                        email: username,
+                        password: password
+                    }
+                    $.ajax({url: "http://localhost:3000/api/users/login", 
+                        type: 'POST',
+                        data: JSON.stringify(credentials),
+                        dataType: "json",
+                        contentType: 'application/json',
+                        success: function(result,status,xhr){
+                            //alert("User: " + result.email + " successfully logged in");//xhr.getResponseHeader('x-auth')
+                            // console.log(xhr.getResponseHeader("x-auth"));
+                            window.sessionStorage.accessToken = xhr.getResponseHeader("x-auth"); 
+                            window.location.href = "/products"; 
+                        },
+                        error: function(xhr) {
+                            if (xhr.status === 400)
+                                alert('Invalid login credentials');
+                            else
+                                alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                        }
+                    });
+                });
+               
+            });
+        </script>
+    </head>
+    <body>
+        <form>
+        <div class="container" align="center">
+            <label for="uname">Username</label>
+            <input id="txtemail" type="text" placeholder="Enter Username" name="uname" required/>
+            <br/>
+            <label for="psw">Password</label>
+            <input id="txtpassword" type="password" placeholder="Enter Password" name="psw" required/>
+            <br/>
+            <div align="center"><button id="btnLogin" type="button">Login</button>
+            <button type="button" class="cancelbtn">Cancel</button></div><br/>
+            <label>
+                <input type="checkbox" checked="checked" name="remember">Remember me
+            </label>
+            <a href="user.html">Register Here</a>
+        </div>
+    </form>
+    </body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <link rel="stylesheet" href="styles/style.css">
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+        <script>
+            $(document).ready(function() {
+                $("#btnSave").click(function() {
+                 if ($("#txtSupplier").val().trim()===""){
+                     alert("Please enter Supplier Name");
+                     $("#txtSupplier").focus();
+                     return false;
+                 }
+                 else if ($("#txtQuoteDate").val() === "") {
+                     alert("Please enter Quotation Date");
+                     $("#txtQuoteDate").focus();
+                     return false;
+                 }
+                 var product = {
+                     supplier:$("#txtSupplier").val().trim() ,
+                     quoteDate: $("#txtQuoteDate").val().trim(),
+                     productName: $("#txtProductName").val().trim(),
+                     productSpecs: $("#txtProductSpecs").val().trim(),
+                     price: $("#txtPrice").val().trim(),
+                     contactEmail: $("#txtEmail").val().trim(),
+                     createdOn: new Date().getDate()
+                 }
+                 $.ajax({url: "http://localhost:3000/api/products/", 
+                        type: 'POST',
+                        data: JSON.stringify(product),
+                        dataType: "json",
+                        headers: {'x-auth': window.sessionStorage.accessToken},
+                        contentType: 'application/json',
+                        success: function(result,status,xhr){
+                            alert("Product successfully saved");//xhr.getResponseHeader('x-auth')
+                        },
+                        error: function(xhr) {
+                            alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                        }
+                    });
+                });
+            });
+        </script>
+</head>
+    <body>
+    <form style="width: 50%;">
+        <div class="container">
+            <table>
+                <tr>
+                    <td><label>Supplier</label></td>
+                    <td><input id="txtSupplier" type="text" placeholder="Enter Supplier Name"></td>
+                </tr>
+                <tr><td><label>Quote Date</label></td>
+                    <td><input id="txtQuoteDate" type="date" placeholder="Enter Quotation Date" size="15"></td>
+                </tr>
+                <tr><td><label>Product Name</label></td>
+                    <td><input id="txtProductName" type="text" placeholder="Enter Product Name"></td>
+                </tr>
+                <tr><td><label>Product Specifications</label></td>
+                    <td><textarea id="txtProductSpecs" placeholder="Enter Product Specification" rows="5" cols="50"></textarea></td>
+                </tr>
+                <tr><td><label>Price</label></td>
+                    <td><input id="txtPrice" type="number" placeholder="0.00"></td>
+                </tr>
+                <tr><td><label>Contact Email</label></td>
+                    <td><input id="txtEmail" type="text" placeholder="Enter Email"></td>
+                </tr>
+                <tr><td span="2"><button id="btnSave">Save Details</button></td>
+                    <td><a href="/login">Logout</a></td></tr>
+            </table>
+        </div>
+    </form>
+    </body>
+</html>

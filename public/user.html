@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="styles/style.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+    <script>
+         $(document).ready(function(){
+             $("#btnSave").click(function() {
+                 if ($("#txtFName").val().trim()===""){
+                     alert("Please enter First Name");
+                     $("#txtFName").focus();
+                     return false;
+                 } 
+                 else if($("#txtEmail").val().trim()===""){
+                     alert("Please enter the email");
+                     $("#txtEmail").focus();
+                     return false;
+                 }
+                 else if ($("#txtPwd").val().trim() ===""){
+                     alert("Please enter a new password");
+                     $("#txtPwd").focus();
+                     return false;
+                 }
+                 var user ={
+                     firstName: $("#txtFName").val().trim(),
+                     lastName: $("#txtLName").val().trim(),
+                     email: $("#txtEmail").val().trim(),
+                     password: $("#txtPwd").val().trim()
+                 }
+                 $.ajax({url: "http://localhost:3000/users/", 
+                        type: 'POST',
+                        data: JSON.stringify(user),
+                        dataType: "json",
+                        contentType: 'application/json',
+                        success: function(result,status,xhr){
+                            alert("User: " + result.email + " successfully registered");//xhr.getResponseHeader('x-auth')
+                            window.location.href = "login.html"; 
+                        },
+                        error: function(xhr) {
+                            if (xhr.status === 400)
+                            {
+                                if (xhr.responseJSON.errmsg.search("duplicate key")>0)
+                                    alert("User already registered");
+                                else
+                                    alert(xhr.responseJSON.errmsg);
+                            }
+                            else
+                                alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                        }
+                    });
+             });
+         });
+    </script>
+</head>
+    <body>
+    <form style="width: 50%;">
+        <div class="container">
+            <label>First Name</label>
+            <input id="txtFName" type="text" placeholder="Enter First Name"><br/>
+            <label>Last Name</label>
+            <input id="txtLName" type="text" placeholder="Enter Last Name"><br/>
+            <label>Email</label>
+            <input id="txtEmail" type="text" placeholder="Enter Email"><br/>
+            <label>Password</label>
+            <input id="txtPwd" type="password" placeholder="Enter Password"><br/>
+            <div align="center">
+                <button id="btnSave" type="button">Save</button>
+                <button class="cancelbtn" type="button">Cancel</button>
+            </div>
+        </div>
+    </form>
+    </body>
+</html>
