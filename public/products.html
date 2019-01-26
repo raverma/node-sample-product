@@ -1,76 +1,145 @@
 <!DOCTYPE html>
 <html>
 <head>
-        <link rel="stylesheet" href="styles/style.css">
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js"
-        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-        crossorigin="anonymous"></script>
-        <script>
-            $(document).ready(function() {
-                $("#btnSave").click(function() {
-                 if ($("#txtSupplier").val().trim()===""){
-                     alert("Please enter Supplier Name");
-                     $("#txtSupplier").focus();
-                     return false;
-                 }
-                 else if ($("#txtQuoteDate").val() === "") {
-                     alert("Please enter Quotation Date");
-                     $("#txtQuoteDate").focus();
-                     return false;
-                 }
-                 var product = {
-                     supplier:$("#txtSupplier").val().trim() ,
-                     quoteDate: $("#txtQuoteDate").val().trim(),
-                     productName: $("#txtProductName").val().trim(),
-                     productSpecs: $("#txtProductSpecs").val().trim(),
-                     price: $("#txtPrice").val().trim(),
-                     contactEmail: $("#txtEmail").val().trim(),
-                     createdOn: new Date().getDate()
-                 }
-                 $.ajax({url: "http://localhost:3000/api/products/", 
+    <title>Product Details</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // if(console.log(window.sessionStorage.accessToken)==undefined)
+            //     window.location.href="/login";
+            $("#btnSave").click(function() {
+                if ($("#txtSupplier").val().trim()===""){
+                    alert("Please enter Supplier Name");
+                    $("#txtSupplier").focus();
+                    return false;
+                }
+                else if ($("#txtQuoteDate").val() === "") {
+                    alert("Please enter Quotation Date");
+                    $("#txtQuoteDate").focus();
+                    return false;
+                }
+                console.log($("#File")[0].files[0]);
+                if ($("#File")[0].files[0] ===undefined){
+                    $("#File").removeAttr("name");
+                }
+                // console.log($("#File")[0].files[0]);
+                // var product = {
+                //     supplier:$("#txtSupplier").val().trim() ,
+                //     quoteDate: $("#txtQuoteDate").val().trim(),
+                //     productName: $("#txtProductName").val().trim(),
+                //     productSpecs: $("#txtProductSpecs").val().trim(),
+                //     price: $("#txtPrice").val().trim(),
+                //     contactEmail: $("#txtEmail").val().trim(),
+                //     productImage:$("#File")[0].files[0],
+                //     createdOn: new Date().getDate()
+                // }
+                
+                // $.ajax({url: "http://localhost:3000/api/products/", 
+                //     type: 'POST',
+                //     data: product,
+                //     // dataType: "json",
+                //     enctype:   "multipart/form-data",
+                //     headers: {'x-auth': window.sessionStorage.accessToken},
+                //     contentType: 'form-data',
+                //     success: function(result,status,xhr){
+                //         alert("Product successfully saved");//xhr.getResponseHeader('x-auth')
+                //         return false;
+                //     },
+                //     error: function(xhr) {
+                //         alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                //         return false;
+                //     }
+                // });
+                $("form#data").submit(function(e) {
+                    e.preventDefault();    
+                    var formData = new FormData(this);
+                    $.ajax({url: "http://localhost:3000/api/products/", 
                         type: 'POST',
-                        data: JSON.stringify(product),
-                        dataType: "json",
+                        data: formData,
                         headers: {'x-auth': window.sessionStorage.accessToken},
-                        contentType: 'application/json',
-                        success: function(result,status,xhr){
-                            alert("Product successfully saved");//xhr.getResponseHeader('x-auth')
+                        contentType: false,
+                        success: function(result, status){
+                            if (status===200)
+                                alert("Product is saved successfully");
+                           
+                            return false;
                         },
                         error: function(xhr) {
                             alert("An error occured: " + xhr.status + " " + xhr.statusText);
-                        }
+                            return false;
+                        },
+                        cache: false,
+                        processData: false
                     });
                 });
             });
-        </script>
+        });
+    </script>
 </head>
     <body>
-    <form style="width: 50%;">
-        <div class="container">
+     <form style="width:60%" id="data" method="post" enctype="multipart/form-data">
+      <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+            <a class="navbar-brand" href="#"><b>RV</b>Associates</a>
+            </div>
+            <ul class="nav navbar-nav">
+            <li><a href="/home">Home</a></li>
+            <li class="active"><a href="/productlist">Products</a></li>
+            <li><a href="/register">Register</a></li>
+            <li><a href="/contact">Contact</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </div>
+      </nav>
+      <div class="w3-content w3-padding" style="max-width:600px">
+            <div class="w3-container w3-padding-32">
+            <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Create Product</h3>
+            <div id="tblProducts" class="container">
             <table>
                 <tr>
                     <td><label>Supplier</label></td>
-                    <td><input id="txtSupplier" type="text" placeholder="Enter Supplier Name"></td>
+                    <td><input id="txtSupplier" type="text" name="supplier" placeholder="Enter Supplier Name"></td>
                 </tr>
                 <tr><td><label>Quote Date</label></td>
-                    <td><input id="txtQuoteDate" type="date" placeholder="Enter Quotation Date" size="15"></td>
+                    <td><input id="txtQuoteDate" type="date" name="quoteDate" placeholder="Enter Quotation Date" size="15"></td>
                 </tr>
                 <tr><td><label>Product Name</label></td>
-                    <td><input id="txtProductName" type="text" placeholder="Enter Product Name"></td>
+                    <td><input id="txtProductName" type="text" name="productName" placeholder="Enter Product Name"></td>
                 </tr>
                 <tr><td><label>Product Specifications</label></td>
-                    <td><textarea id="txtProductSpecs" placeholder="Enter Product Specification" rows="5" cols="50"></textarea></td>
+                    <td><textarea id="txtProductSpecs" name="productSpecs" placeholder="Enter Product Specification" rows="5" cols="50"></textarea></td>
+                </tr>
+                <tr>
+                    <td><label>Upload Product Image</label></td>
+                    <td>
+                        <input type="file" id="File" name="productImage" multiple size="50" style="padding:2px">
+                    </td>
                 </tr>
                 <tr><td><label>Price</label></td>
-                    <td><input id="txtPrice" type="number" placeholder="0.00"></td>
+                    <td><input id="txtPrice" type="number" name="price" placeholder="0.00"></td>
                 </tr>
+
                 <tr><td><label>Contact Email</label></td>
-                    <td><input id="txtEmail" type="text" placeholder="Enter Email"></td>
+                    <td><input id="txtEmail" type="text" name="contactEmail" placeholder="Enter Email"></td>
                 </tr>
                 <tr><td span="2"><button id="btnSave">Save Details</button></td>
-                    <td><a href="/login">Logout</a></td></tr>
+                    <td><a href="/login">Logout</a>&nbsp;&nbsp;<a href="/productlist">Products</a></td></tr>
             </table>
+         </div>
         </div>
+      </div>
     </form>
     </body>
 </html>

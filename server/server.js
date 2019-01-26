@@ -17,7 +17,16 @@ const bodyParser = require('body-parser');
 const {ObjectID} = require('mongodb');
 const path = require('path');
 const multer = require('multer');
-const upload = multer({dest: 'uploads/'});
+
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, './uploads');
+    },
+    filename: function(req,file, cb) {
+        cb(null, file.originalname);
+    }
+});
+const upload = multer({storage: storage});
 const publicPath = path.join(__dirname, '../public');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
@@ -40,7 +49,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        expires: 600000
+        expires: 60000
     }
 }));
 
@@ -56,7 +65,7 @@ app.use((req, res, next) => {
 // middleware function to check for logged-in users
 var sessionChecker = (req, res, next) => {
     if (req.session.user && req.cookies.user_sid) {
-        res.redirect('/products');
+        res.redirect('/productlist');
     } else {
         next();
     }    
@@ -79,8 +88,13 @@ var authenticate = (req, res, next) => {
 };
 
 app.get('/', sessionChecker, (req, res) => {
-    res.redirect('/login');
+    res.redirect('/home');
 });
+
+app.route('/home')
+.get(sessionChecker, (req, res)=>{
+    res.sendFile(path.join(__dirname, '../public/home.html'));
+});  
 
 app.route('/login')
     .get(sessionChecker, (req, res) => {
@@ -92,7 +106,20 @@ app.route('/products')
         res.sendFile(path.join(__dirname, '../public/products.html'));
     });
 
-app.post('/api/products',authenticate, (req, res) => {
+app.route('/productlist')
+    .get(sessionChecker, (req, res)=>{
+        res.sendFile(path.join(__dirname, '../public/productlist.html'));
+    });    
+
+app.route('/register')
+    .get(sessionChecker, (req, res)=>{
+        res.sendFile(path.join(__dirname, '../public/user.html'));
+    }); 
+app.route('/contact')
+    .get(sessionChecker, (req, res)=>{
+    res.sendFile(path.join(__dirname, '../public/contact.html'));
+    });     
+app.post('/api/products',upload.single('productImage'),authenticate, (req, res) => {
     var product = new Product({
         supplier:req.body.supplier,
         quoteDate:req.body.quoteDate,
@@ -100,6 +127,7 @@ app.post('/api/products',authenticate, (req, res) => {
         productSpecs: req.body.productSpecs,
         price: req.body.price,
         contactEmail: req.body.contactEmail,
+        productImage: req.file.path,
         _createdBy: req.user._id
     });
     product.save().then((doc)=>{
@@ -183,7 +211,7 @@ app.post('/api/users/login', async (req, res)=>{
     }
 });
 
-app.delete('/api/users/me/token', authenticate, async (req, res)=> {
+app.delete('/api/users/logout', authenticate, async (req, res)=> {
     try {
         await req.user.removeToken(req.token);
         res.status(200).send();

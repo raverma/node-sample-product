@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"
     integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
     crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <script>
          $(document).ready(function(){
              $("#btnSave").click(function() {
@@ -55,21 +60,37 @@
     </script>
 </head>
     <body>
-    <form style="width: 50%;">
-        <div class="container">
-            <label>First Name</label>
-            <input id="txtFName" type="text" placeholder="Enter First Name"><br/>
-            <label>Last Name</label>
-            <input id="txtLName" type="text" placeholder="Enter Last Name"><br/>
-            <label>Email</label>
-            <input id="txtEmail" type="text" placeholder="Enter Email"><br/>
-            <label>Password</label>
-            <input id="txtPwd" type="password" placeholder="Enter Password"><br/>
-            <div align="center">
-                <button id="btnSave" type="button">Save</button>
-                <button class="cancelbtn" type="button">Cancel</button>
+         <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                <a class="navbar-brand" href="#"><b>RV</b>Associates</a>
+                </div>
+                <ul class="nav navbar-nav">
+                <li><a href="/home">Home</a></li>
+                <li><a href="/productlist">Products</a></li>
+                <li class="active"><a href="/register">Register</a></li>
+                <li><a href="/contact">Contact</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/logout">Logout</a></li>
+                </ul>
             </div>
+        </nav>
+        <div class="w3-content w3-padding" style="max-width:600px">
+          <div class="w3-container w3-padding-32" id="contact">
+            <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Sign Up</h3>  
+                <label>First Name</label>
+                <input id="txtFName" class="w3-input w3-border" type="text" placeholder="Enter First Name">
+                <label>Last Name</label>
+                <input id="txtLName" class="w3-input w3-border" type="text" placeholder="Enter Last Name">
+                <label>Email</label>
+                <input id="txtEmail" class="w3-input w3-border" type="text" placeholder="Enter Email">
+                <label>Password</label>
+                <input id="txtPwd" class="w3-input w3-border" type="password" placeholder="Enter Password">
+                <button class="w3-button w3-black w3-section" type="submit">
+                    <i class="fa fa-paper-plane"></i> Submit
+                </button>
+          </div>
         </div>
-    </form>
     </body>
 </html>

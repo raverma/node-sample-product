@@ -34,6 +34,9 @@ var Product = mongoose.model('Product', {
             message: '{VALUE} is not a valid email'
         }
     },
+    productImage: {
+        type: String
+    },
     createdOn: {
         type: Number,
         default: null

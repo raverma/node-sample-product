@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Products List</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            if ( window.sessionStorage.accessToken===undefined)
+                window.location.href="/login";
+            $.ajax({url: "http://localhost:3000/api/products/", 
+                    type: 'GET',
+                    dataType: "json",
+                    headers: {'x-auth': window.sessionStorage.accessToken},
+                    contentType: 'application/json',
+                    beforeSend: function(xhr){xhr.setRequestHeader('x-auth', window.sessionStorage.accessToken);},
+                    success: function(result,status,xhr){
+                        var txt = '';
+                        txt += "<table id='tblProducts'><thead><tr><th>Supplier</th><th>Quotation Date</th><th>Product Name</th>"
+                        txt += "<th>Product Specs</th><th>Price</th><th>Contact Email</th><th>Image</th></tr></thead><tbody>"
+                        for (product in result.products) {
+                            txt += "<tr><td>" + result.products[product].supplier + "</td><td>" + 
+                            result.products[product].quoteDate + "</td><td>" + result.products[product].productName + 
+                            "</td><td>" + result.products[product].productSpecs + "</td><td>" + 
+                            result.products[product].price + "</td><td>" + result.products[product].contactEmail + 
+                            "</td><td>" + result.products[product].productImage + "</td></tr>";
+                        }
+                        txt += "</tbody></table>";
+                        $("#divProducts").html(txt);
+                        $("#tblProducts").DataTable();
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.status);
+                        if (xhr.status === 401 || xhr.status === 404) 
+                            window.location.href = "/login"; 
+                        else
+                            $("#divProducts").html("An error occured: " + xhr.status + " " + xhr.statusText);
+                    }
+                });
+            });
+    </script>
+</head>
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+            <a class="navbar-brand" href="#"><b>RV</b>Associates</a>
+            </div>
+            <ul class="nav navbar-nav">
+            <li><a href="/home">Home</a></li>
+            <li class="active"><a href="/productlist">Products</a></li>
+            <li><a href="/register">Register</a></li>
+            <li><a href="/contact">Contact</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="w3-content w3-padding" style="max-width:1000px">
+        <div class="w3-container w3-padding-32">
+            <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Products</h3>
+            <div id="divProducts"> 
+
+            </div>
+            <a href="/products">Create New</a>
+        </div>
+    </div>
+  
+</body>
+</html>

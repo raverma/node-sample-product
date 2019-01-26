@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="styles/style.css">
+        <script
+            src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
         <script>
             $(document).ready(function(){
                 $('#btnLogin').click(function (){
@@ -44,27 +44,26 @@
         </script>
     </head>
     <body>
-        <div class="container" style="width:30%;">
-            <div class="form-group">
+        <form>
+        <div class="container" align="center" >
             <label for="uname">Username</label>
-            <input id="txtemail" class="form-control" type="text" placeholder="Enter Username" name="uname" required/>
-            </div>
-            <div class="form-group">
+            <input id="txtemail" type="text" placeholder="Enter Username" name="uname" required/>
+
             <label for="psw">Password</label>
-            <input id="txtpassword" class="form-control" type="password" placeholder="Enter Password" name="psw" required/>
-            </div>
-            <div class="form-group form-check">
-            <label class="form-check-label">
-                <input type="checkbox" class="form-check-input" checked="checked" name="remember">Remember me
+            <input id="txtpassword" type="password" placeholder="Enter Password" name="psw" required/>
+            
+            <button type="submit" id="btnLogin">Login</button>
+            <button type="button" class="cancelbtn">Cancel</button>
+        
+            <label>
+                <input type="checkbox" checked="checked" name="remember">Remember me
             </label>
-            </div>
-            <button class="btn btn-primary" type="submit" id="btnLogin">Login</button>
-            <div>
+            <div style="padding-bottom:15px">
                 <span style="float: left"><a href="/register">Register Here</a></span>
                 <span style="float: right">Forgot <a href="#">password?</a></span>
             </div>
-            
         </div>
-       
+      
+    </form>
     </body>
 </html>
