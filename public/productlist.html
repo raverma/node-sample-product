@@ -32,7 +32,7 @@
                             result.products[product].quoteDate + "</td><td>" + result.products[product].productName + 
                             "</td><td>" + result.products[product].productSpecs + "</td><td>" + 
                             result.products[product].price + "</td><td>" + result.products[product].contactEmail + 
-                            "</td><td>" + result.products[product].productImage + "</td></tr>";
+                            "</td><td>" + (result.products[product].productImage===undefined? "": "<a href='" + result.products[product].productImage + "' target='_blank'>View Image</a>") + "</td></tr>";
                         }
                         txt += "</tbody></table>";
                         $("#divProducts").html(txt);

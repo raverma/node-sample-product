@@ -41,6 +41,7 @@ var app = express();
 var server = http.createServer(app);
 app.use(bodyParser.json());
 app.use(express.static(publicPath));
+app.use('/uploads', express.static('uploads'));
 app.use(cookieParser());
 // initialize express-session to allow us track the logged-in user across sessions.
 app.use(session({
@@ -128,7 +129,9 @@ app.post('/api/products',upload.single('productImage'),authenticate, (req, res) 
         price: req.body.price,
         contactEmail: req.body.contactEmail,
         productImage: (req.file === undefined? undefined : req.file.path),
+        createdOn: new Date().getDate(),
         _createdBy: req.user._id
+        
     });
     product.save().then((doc)=>{
         res.send(doc);
