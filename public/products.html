@@ -67,10 +67,8 @@
                         data: formData,
                         headers: {'x-auth': window.sessionStorage.accessToken},
                         contentType: false,
-                        success: function(result, status){
-                            if (status===200)
-                                alert("Product is saved successfully");
-                           
+                        success: function(result){
+                            alert("Product is saved successfully");
                             return false;
                         },
                         error: function(xhr) {
@@ -135,7 +133,7 @@
                     <td><input id="txtEmail" type="text" name="contactEmail" placeholder="Enter Email"></td>
                 </tr>
                 <tr><td span="2"><button id="btnSave">Save Details</button></td>
-                    <td><a href="/login">Logout</a>&nbsp;&nbsp;<a href="/productlist">Products</a></td></tr>
+                    <td>&nbsp;&nbsp;<a href="/productlist">View Saved Products</a></td></tr>
             </table>
          </div>
         </div>

@@ -127,7 +127,7 @@ app.post('/api/products',upload.single('productImage'),authenticate, (req, res) 
         productSpecs: req.body.productSpecs,
         price: req.body.price,
         contactEmail: req.body.contactEmail,
-        productImage: req.file.path,
+        productImage: (req.file === undefined? undefined : req.file.path),
         _createdBy: req.user._id
     });
     product.save().then((doc)=>{
