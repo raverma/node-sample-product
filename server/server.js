@@ -1,12 +1,4 @@
-var env = process.env.NODE_ENV || 'development';
-
-if (env === 'development'){
-    process.env.PORT = 3000;
-    process.env.MONGODB_URI = 'mongodb://localhost:27017/Products';
-}else if (env === 'test') {
-    process.env.PORT = 3000;
-    process.env.MONGODB_URI = 'mongodb://localhost:27017/ProductsTest';
-}
+require('./config/config.js');
 const _ = require('lodash');
 
 const {SHA256} = require('crypto-js');
