@@ -29,7 +29,7 @@
                             //alert("User: " + result.email + " successfully logged in");//xhr.getResponseHeader('x-auth')
                             // console.log(xhr.getResponseHeader("x-auth"));
                             window.sessionStorage.accessToken = xhr.getResponseHeader("x-auth"); 
-                            window.location.href = "/products"; 
+                            window.location.href = "/home"; 
                         },
                         error: function(xhr) {
                             if (xhr.status === 400)

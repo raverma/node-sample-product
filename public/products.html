@@ -27,9 +27,10 @@
                     $("#txtQuoteDate").focus();
                     return false;
                 }
-                console.log($("#File")[0].files[0]);
-                if ($("#File")[0].files[0] ===undefined){
-                    $("#File").removeAttr("name");
+                else if ($("#txtProductName").val() === "") {
+                    alert("Please enter the Product Name");
+                    $("#txtProductName").focus();
+                    return false;
                 }
                 // console.log($("#File")[0].files[0]);
                 // var product = {
@@ -81,6 +82,29 @@
                 });
             });
         });
+        function logout() {
+        $.ajax({url: "http://localhost:3000/api/users/logout/", 
+                type: 'DELETE',
+                data: JSON.stringify({}),
+                dataType: "json",
+                headers: {'x-auth': window.sessionStorage.accessToken},
+                contentType: 'application/json',
+                success: function(result){
+                    if (result.status === 200)
+                    alert("User successfully logged out");//xhr.getResponseHeader('x-auth')
+                    else if (xhr.status === 404)
+                    alert("No user was logged in");
+                    else
+                    alert(xhr.statusText);
+                    return false;
+                },
+                error: function(xhr) {
+                    alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                    window.sessionStorage.accessToken=null;
+                    return false;
+                }
+            });
+        }
     </script>
 </head>
     <body>
@@ -97,7 +121,7 @@
             <li><a href="/contact">Contact</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="/logout">Logout</a></li>
+                <li><a href="#" onclick="logout();">Logout</a></li>
             </ul>
         </div>
       </nav>

@@ -34,29 +34,53 @@
                      email: $("#txtEmail").val().trim(),
                      password: $("#txtPwd").val().trim()
                  }
-                 $.ajax({url: "http://localhost:3000/users/", 
+                 console.log(user);
+                 $.ajax({url: "http://localhost:3000/api/users/", 
                         type: 'POST',
                         data: JSON.stringify(user),
                         dataType: "json",
                         contentType: 'application/json',
                         success: function(result,status,xhr){
-                            alert("User: " + result.email + " successfully registered");//xhr.getResponseHeader('x-auth')
+                            console.log("User: " + result.email + " successfully registered");//xhr.getResponseHeader('x-auth')
                             window.location.href = "login.html"; 
                         },
                         error: function(xhr) {
                             if (xhr.status === 400)
                             {
                                 if (xhr.responseJSON.errmsg.search("duplicate key")>0)
-                                    alert("User already registered");
+                                    console.log("User already registered");
                                 else
-                                    alert(xhr.responseJSON.errmsg);
+                                    console.log(xhr.responseJSON.errmsg);
                             }
                             else
-                                alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                                console.log("An error occured: " + xhr.status + " " + xhr.statusText + " " + xhr.responseJSON);
                         }
                     });
              });
          });
+         function logout() {
+            $.ajax({url: "http://localhost:3000/api/users/logout/", 
+              type: 'DELETE',
+              data: JSON.stringify({}),
+              dataType: "json",
+              headers: {'x-auth': window.sessionStorage.accessToken},
+              contentType: 'application/json',
+              success: function(result){
+                if (result.status === 200)
+                  alert("User successfully logged out");//xhr.getResponseHeader('x-auth')
+                else if (xhr.status === 404)
+                  alert("No user was logged in");
+                else
+                  alert(xhr.statusText);
+                return false;
+              },
+              error: function(xhr) {
+                  alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                  window.sessionStorage.accessToken=null;
+                  return false;
+              }
+          });
+        }
     </script>
 </head>
     <body>
@@ -72,7 +96,7 @@
                 <li><a href="/contact">Contact</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="/logout">Logout</a></li>
+                    <li><a href="#" onclick="logout();">Logout</a></li>
                 </ul>
             </div>
         </nav>
@@ -87,7 +111,7 @@
                 <input id="txtEmail" class="w3-input w3-border" type="text" placeholder="Enter Email">
                 <label>Password</label>
                 <input id="txtPwd" class="w3-input w3-border" type="password" placeholder="Enter Password">
-                <button class="w3-button w3-black w3-section" type="submit">
+                <button class="w3-button w3-black w3-section" type="submit" id="btnSave">
                     <i class="fa fa-paper-plane"></i> Submit
                 </button>
           </div>

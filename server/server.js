@@ -58,7 +58,7 @@ app.use((req, res, next) => {
 // middleware function to check for logged-in users
 var sessionChecker = (req, res, next) => {
     if (req.session.user && req.cookies.user_sid) {
-        res.redirect('/productlist');
+        res.redirect('/home');
     } else {
         next();
     }    
@@ -69,11 +69,14 @@ var authenticate = (req, res, next) => {
     
         User.findByToken(token).then((user)=>{
             if (!user){
+                console.log(res.status);
                 res.status(404).send();
+                
             }
             //res.send(user);
             req.user = user;
             req.token = token;
+            req.session.user = user.dataValues;
             next();
         }).catch((err)=>{
             res.status(401).send(err);
@@ -92,6 +95,23 @@ app.route('/home')
 app.route('/login')
     .get(sessionChecker, (req, res) => {
         res.sendFile(path.join(__dirname, '../public/login.html'));
+    })
+    .post((req,res)=>{
+        var username = req.body.username,
+        password = req.body.password;
+
+        // User.findOne({where: {username: username}}).then(function (user){
+        //     if (!user  || !user.valid)
+        // });
+        User.findByCredentials(username, password).then(function (user) {
+            if (!user) {
+                res.redirect('/login');
+            } else {
+                req.session.user = user.dataValues;
+                // res.redirect('/home');
+                next();
+            }
+        });
     });
 
 app.route('/products')
