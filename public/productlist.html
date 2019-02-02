@@ -17,7 +17,7 @@
         $(document).ready(function() {
             if ( window.sessionStorage.accessToken===undefined)
                 window.location.href="/login";
-            $.ajax({url: "http://localhost:3000/api/products/", 
+            $.ajax({url: "api/products/", 
                     type: 'GET',
                     dataType: "json",
                     headers: {'x-auth': window.sessionStorage.accessToken},
