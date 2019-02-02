@@ -63,7 +63,7 @@
                 $("form#data").submit(function(e) {
                     e.preventDefault();    
                     var formData = new FormData(this);
-                    $.ajax({url: "http://localhost:3000/api/products/", 
+                    $.ajax({url: "api/products/", 
                         type: 'POST',
                         data: formData,
                         headers: {'x-auth': window.sessionStorage.accessToken},
@@ -83,7 +83,7 @@
             });
         });
         function logout() {
-        $.ajax({url: "http://localhost:3000/api/users/logout/", 
+        $.ajax({url: "api/users/logout/", 
                 type: 'DELETE',
                 data: JSON.stringify({}),
                 dataType: "json",

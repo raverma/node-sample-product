@@ -20,7 +20,7 @@
                         email: username,
                         password: password
                     }
-                    $.ajax({url: "http://localhost:3000/api/users/login", 
+                    $.ajax({url: "api/users/login", 
                         type: 'POST',
                         data: JSON.stringify(credentials),
                         dataType: "json",
