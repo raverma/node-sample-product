@@ -118,7 +118,10 @@ app.route('/products')
     .get(sessionChecker, (req, res)=>{
         res.sendFile(path.join(__dirname, '../public/products.html'));
     });
-
+app.route('/products/edit')
+    .get(sessionChecker, (req, res)=>{
+        res.sendFile(path.join(__dirname, '../public/products.html'));
+    });
 app.route('/productlist')
     .get(sessionChecker, (req, res)=>{
         res.sendFile(path.join(__dirname, '../public/productlist.html'));
@@ -160,6 +163,55 @@ app.get('/api/products', authenticate, (req, res)=>{
     }, (e)=> {
         res.status(400).send(e);
     });
+});
+
+app.get('/api/products/:id', (req, res)=>{
+    var id = req.params.id;
+    if (!ObjectID.isValid(id)){
+        return res.status(404).send({error:'Invalid Object Id'});
+    }
+    Product.findOne({
+        _id: id
+       }).then((products)=> {
+        if (!products){
+            return res.status(404).send('Product not found');
+        }
+        res.send({products});
+        }, (e)=> {
+            res.status(400).send(e);
+    });
+});
+
+app.patch('/api/products/:id', authenticate, (req, res)=>{
+    Product.findByIdAndUpdate(req.params.id,
+        {$set: req.body}, 
+        {new: true, runValidators: true}
+    ).then((product) => {
+        if (!product){
+            return res.status(404).send();
+        }
+        res.send(product);
+        },  (e) =>{
+            res.status(400).send(e);
+    });
+  
+});
+
+app.delete('/api/products/delete/:id', (req, res) => {
+    var id = req.params.id;
+    if (!ObjectID.isValid(id)){
+        return res.status(404).send({error:'Invalid Object Id'});
+    }
+     Product.findOneAndRemove({
+            _id: id
+        }).then((product)=>{
+            if (!product){
+                return res.status(404).send({message: "Product with given id is not found"});
+            }
+            res.status(200).send(product);
+        }, (err)=> {
+            res.status(500).send(err);
+        })
 });
 
 app.get('/api/users', (req,res)=> {

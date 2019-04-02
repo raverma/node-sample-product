@@ -6,13 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="styles/style.css">
-    <link rel="stylesheet" href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"
     integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
     crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-    <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script>
         $(document).ready(function() {
             if ( window.sessionStorage.accessToken===undefined)
@@ -25,14 +26,20 @@
                     beforeSend: function(xhr){xhr.setRequestHeader('x-auth', window.sessionStorage.accessToken);},
                     success: function(result,status,xhr){
                         var txt = '';
-                        txt += "<table id='tblProducts'><thead><tr><th>Supplier</th><th>Quotation Date</th><th>Product Name</th>"
-                        txt += "<th>Product Specs</th><th>Price</th><th>Contact Email</th><th>Image</th></tr></thead><tbody>"
-                        for (product in result.products) {
-                            txt += "<tr><td>" + result.products[product].supplier + "</td><td>" + 
-                            result.products[product].quoteDate + "</td><td>" + result.products[product].productName + 
-                            "</td><td>" + result.products[product].productSpecs + "</td><td>" + 
-                            result.products[product].price + "</td><td>" + result.products[product].contactEmail + 
-                            "</td><td>" + (result.products[product].productImage===undefined? "": "<a href='" + result.products[product].productImage + "' target='_blank'><img src='" + result.products[product].productImage + "' alt='image' style='width:150px'></a>") + "</td></tr>";
+                        txt += "<table id='tblProducts' class='display dataTable'><thead><tr><th>Supplier</th><th>Quotation Date</th><th>Product Name</th>"
+                        txt += "<th>Product Specs</th><th>Price</th><th>Contact Email</th><th>Image</th><th>Function</th></tr></thead><tbody>"
+                        for (index in result.products) {
+                            var product = result.products[index];
+                            txt += "<tr><td>" + product.supplier + "</td><td>" + 
+                            product.quoteDate + "</td><td>" + product.productName + 
+                            "</td><td>" + product.productSpecs + "</td><td>" + 
+                            product.price + "</td><td>" + product.contactEmail + 
+                            "</td><td>" + (product.productImage===undefined? "": "<a href='" + 
+                            product.productImage + "' target='_blank'><img src='" + product.productImage + 
+                            "' alt='image' style='width:150px'></a>") + "</td><td><button id='btnEdit" + product._id + 
+                            "' class='btn-link js-edit' onclick='editProduct(this)' href='/api/products/" + 
+                            product._id + "'>Edit</button>&nbsp;" + "<button id='btnDel" + product._id + 
+                            "' class='btn-link js-delete' onclick='deleteProduct(this)'>Delete</button></td></tr>";
                         }
                         txt += "</tbody></table>";
                         $("#divProducts").html(txt);
@@ -69,6 +76,31 @@
                   return false;
               }
           });
+        }
+
+        function deleteProduct(obj){
+            var id = obj.id.replace('btnDel','');
+            $.ajax({url: "/api/products/delete/" + id.trim(), 
+              type: 'DELETE',
+              data: JSON.stringify({}),
+              dataType: "json",
+              contentType: 'application/json',
+              success: function(result){
+                if (result._id === id)
+                    obj.closest("tr").remove();
+                else
+                    console.log(result);
+              },
+              error: function(xhr) {
+                  alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                  window.sessionStorage.accessToken=null;
+                  return false;
+              }
+            });
+        }
+        function editProduct(obj){
+            var id = obj.id.replace('btnEdit','');
+            window.location.href = "/products/edit?id=" + id;
         }
     </script>
 </head>

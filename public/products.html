@@ -5,13 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="/styles/style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"
     integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
     crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-
     <script>
         $(document).ready(function() {
             // if(console.log(window.sessionStorage.accessToken)==undefined)
@@ -62,23 +62,50 @@
                 // });
                 $("form#data").submit(function(e) {
                     e.preventDefault();    
-                    var formData = new FormData(this);
-                    $.ajax({url: "api/products/", 
-                        type: 'POST',
-                        data: formData,
-                        headers: {'x-auth': window.sessionStorage.accessToken},
-                        contentType: false,
-                        success: function(result){
-                            alert("Product is saved successfully");
-                            return false;
-                        },
-                        error: function(xhr) {
-                            alert("An error occured: " + xhr.status + " " + xhr.statusText);
-                            return false;
-                        },
-                        cache: false,
-                        processData: false
-                    });
+                    var patchData = {
+                                    "productSpecs": $("#txtProductSpecs").val().trim()
+                                    };
+                    console.log(patchData);
+                    var qrStr = window.location.search;
+                    if (window.location.href.indexOf('edit')> -1){
+                        var productId = qrStr.split("?")[1].split("=")[1];
+                        $.ajax({url: "/api/products/"  + productId, 
+                            type: 'PATCH',
+                            data: JSON.stringify(patchData),
+                            headers: {'x-auth': window.sessionStorage.accessToken},
+                            contentType: 'application/json',
+                            success: function(result){
+                                console.log(result);
+                                alert("Product is updated successfully");
+                                return false;
+                            },
+                            error: function(xhr) {
+                                alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                                return false;
+                            },
+                            cache: false,
+                            processData: false
+                        });
+                    }
+                    else {
+                        $.ajax({url: "/api/products/", 
+                            type: 'POST',
+                            data: formData,
+                            headers: {'x-auth': window.sessionStorage.accessToken},
+                            contentType: false,
+                            success: function(result){
+                                alert("Product is saved successfully");
+                                return false;
+                            },
+                            error: function(xhr) {
+                                alert("An error occured: " + xhr.status + " " + xhr.statusText);
+                                return false;
+                            },
+                            cache: false,
+                            processData: false
+                        });
+                    }
+                   
                 });
             });
         });
@@ -105,10 +132,39 @@
                 }
             });
         }
+        function checkEdit(){
+            var qrStr = window.location.search;
+            if (qrStr.indexOf('?') > -1 ){
+                var productId = qrStr.split("?")[1].split("=")[1];
+                $.ajax({url: "/api/products/" + productId, 
+                    type: 'GET',
+                    dataType: "json",
+                    contentType: 'application/json',
+                    success: function(result,status,xhr){
+                        if(status === "success")
+                            fillProductDetails(result);
+                    },
+                    error: function(xhr) {
+                        console.log(xhr);
+                    }
+                });
+            }
+           
+        }
+        function fillProductDetails(result){
+            $('#txtSupplier').val(result.products.supplier);
+            var dt = new Date(result.products.quoteDate);
+            var dtFormatted = dt.getFullYear() + '-' + ('0' + (dt.getMonth() + 1)).slice(-2) + '-' + ('0' + dt.getDate()).slice(-2);
+            $("#txtQuoteDate").val(dtFormatted);
+            $("#txtProductName").val(result.products.productName);
+            $("#txtProductSpecs").val(result.products.productSpecs);
+            $("#txtPrice").val(result.products.price);
+            $("#txtEmail").val(result.products.contactEmail);
+        }
     </script>
 </head>
-    <body>
-     <form style="width:60%" id="data" method="post" enctype="multipart/form-data">
+    <body onload="checkEdit()">
+     <form style="width:60%" id="data" method="post"  enctype="multipart/form-data">
       <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container-fluid">
             <div class="navbar-header">
