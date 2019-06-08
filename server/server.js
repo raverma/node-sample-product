@@ -52,6 +52,8 @@ app.use((req, res, next) => {
     if (req.cookies.user_sid && !req.session.user) {
         res.clearCookie('user_sid');        
     }
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, x-auth, Accept");
     next();
 });
 
@@ -136,6 +138,7 @@ app.route('/contact')
     res.sendFile(path.join(__dirname, '../public/contact.html'));
     });     
 app.post('/api/products',upload.single('productImage'),authenticate, (req, res) => {
+    console.log(req.body);
     var product = new Product({
         supplier:req.body.supplier,
         quoteDate:req.body.quoteDate,
@@ -154,7 +157,20 @@ app.post('/api/products',upload.single('productImage'),authenticate, (req, res) 
         res.status(400).send(e);
     });
 });
-
+app.post('/api/upload',upload.single('productImage'), function (req, res) {
+    if (!req.file) {
+        console.log("No file received");
+        return res.send({
+          success: false
+        });
+    
+      } else {
+        console.log('file received');
+        return res.send({
+          success: true
+        })
+      }
+});
 app.get('/api/products', authenticate, (req, res)=>{
     Product.find({
         _createdBy: req.user._id

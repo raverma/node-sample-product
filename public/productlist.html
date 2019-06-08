@@ -31,7 +31,7 @@
                         for (index in result.products) {
                             var product = result.products[index];
                             txt += "<tr><td>" + product.supplier + "</td><td>" + 
-                            product.quoteDate + "</td><td>" + product.productName + 
+                            formatDate(product.quoteDate) + "</td><td>" + product.productName + 
                             "</td><td>" + product.productSpecs + "</td><td>" + 
                             product.price + "</td><td>" + product.contactEmail + 
                             "</td><td>" + (product.productImage===undefined? "": "<a href='" + 
@@ -54,6 +54,21 @@
                     }
                 });
         });
+        function formatDate(pDate){
+            var rawDate =new Date(pDate);
+            var dd = rawDate.getDay();
+            var mm = rawDate.getMonth() + 1; //January is 0!
+
+            var yyyy = rawDate.getFullYear();
+            if (dd < 10) {
+            dd = '0' + dd;
+            } 
+            if (mm < 10) {
+            mm = '0' + mm;
+            } 
+            var fDate =  mm + '/' + dd + '/' + yyyy;
+            return fDate;
+        }
         function logout() {
             $.ajax({url: "api/users/logout/", 
               type: 'DELETE',
